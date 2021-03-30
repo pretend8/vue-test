@@ -7,7 +7,6 @@ const Mock = require('mockjs')
 const mockDir = path.join(process.cwd(), 'mock')
 
 function registerRoutes(app) {
-  debugger
   let mockLastIndex
   const { mocks } = require('./index.js')
   const mocksForServer = mocks.map(route => {

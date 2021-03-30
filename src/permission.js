@@ -10,7 +10,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  console.log(111111, 'aaaa')
   // start progress bar
   NProgress.start()
 
@@ -37,7 +38,10 @@ router.beforeEach(async(to, from, next) => {
           const { roles } = await store.dispatch('user/getInfo')
 
           // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          const accessRoutes = await store.dispatch(
+            'permission/generateRoutes',
+            roles
+          )
 
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
