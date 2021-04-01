@@ -2,14 +2,18 @@
   <div class="app-container">
     <base-table
       border
+      :loading="dataListLoading"
       :options="options"
-      :value="formVal"
-      :rules="rules"
       :columns="columns"
-      :dataSource="list"
+      :dataSource="dataList"
       :exportBut="exportBut(this)"
       :operates="operates(this)"
-      :pagination="listQuery"
+      :pagination="{
+        page: page,
+        limit: limit
+      }"
+      :dataTotal="total"
+      @handleChangePage="handleChangePage"
     >
       <template #content_context>
         <base-search
@@ -101,25 +105,6 @@ const operates = that => [
   }
 ]
 
-// 服务器请求返回值
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    age: 32,
-    sex: 0,
-    address: '西湖区湖底公园1号'
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    sex: 1,
-    disabled: 2,
-    address: '西湖区湖底公园1号'
-  }
-]
-
 // 表格扩展按钮
 const exportBut = that => [
   {
@@ -149,46 +134,25 @@ export default {
   },
   data() {
     return {
-      // mixinViewModuleOptions: {
-      //   getDataListURL: 'qmnreport/reportblockbbt5/page',
-      //   getDataListIsPage: true,
-      //   deleteURL: 'qmnreport/reportblockbbt5',
-      //   deleteIsBatch: true,
-      //   exportURL: ''
-      // },
+      mixinViewModuleOptions: {
+        getDataMethod: fetchList,
+        getDataListURL: 'qmnreport/reportblockbbt5/page',
+        getDataListIsPage: true,
+        deleteURL: 'qmnreport/reportblockbbt5',
+        deleteIsBatch: true,
+        exportURL: ''
+      },
       columns,
       operates,
-      dataSource,
       exportBut,
       dataForm: {
-        plant: '',
-        status: '',
-        runTime: '',
-        problemType: '',
-        model: '',
-        owner: '',
-        currentWeek: '',
-        startDate: '',
-        endDate: ''
-      },
-      formVal: {
-        name: 18335
+        input: '',
+        select: ''
       },
       options: {
         index: true,
         labelIndex: '序号'
-      },
-      rules: {
-        name: [{ required: true, message: '请填写学生ID', trigger: 'blur' }]
-      },
-      list: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        test: [1, 2, 34]
-      },
-      dataTotal: null
+      }
     }
   },
   computed: {
@@ -271,37 +235,42 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getDataList()
   },
   methods: {
+    // 分页跳转查询
+    handleChangePage(val) {
+      this.page = val
+      this.getDataList()
+    },
     // 新增
     handleCreate() {},
     // search handle
     handleSearch() {
-      this.listQuery.page = 1
-      this.getList()
+      this.page = 1
+      this.getDataList()
     },
     // reset handle
     handleReset() {
-      this.listQuery.page = 1
-      this.listQuery.limit = 1
-      this.getList()
+      this.page = 1
+      this.limit = 10
+      this.getDataList()
     },
     handleBatchCourse() {
       console.log('点击批量导入按钮')
     },
-    async getList() {
-      this.listLoading = true
-      const res = await fetchList(this.listQuery)
-      const { data } = await fetchList(this.listQuery)
-      const items = data.items
-      this.list = items.map(v => {
-        this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-        v.originalTitle = v.title //  will be used when user click the cancel botton
-        return v
-      })
-      this.listLoading = false
-    },
+    // async getList() {
+    //   this.listLoading = true
+    //   const { data } = await fetchList(this.listQuery)
+    //   const items = data.items
+    //   this.dataTotal = data.total
+    //   this.list = items.map(v => {
+    //     this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+    //     v.originalTitle = v.title //  will be used when user click the cancel botton
+    //     return v
+    //   })
+    //   this.listLoading = false
+    // },
     cancelEdit(row) {
       row.title = row.originalTitle
       row.edit = false

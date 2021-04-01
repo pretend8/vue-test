@@ -114,7 +114,31 @@ export const constantRoutes = [
       }
     ]
   },
-  tableRouter
+  tableRouter,
+  {
+    path: '/demo',
+    component: Layout,
+    redirect: '/demo/input',
+    name: 'Demo',
+    meta: {
+      title: 'Demo',
+      icon: 'table'
+    },
+    children: [
+      {
+        path: 'demo-input',
+        component: () => import('@/views/demo/index'),
+        name: 'DemoInput',
+        meta: { title: 'DemoInput' }
+      },
+      {
+        path: 'demo-debounce',
+        component: () => import('@/views/demo/debounce'),
+        name: 'DemoDebounceBtn',
+        meta: { title: 'DemoDebounce' }
+      }
+    ]
+  }
   // {
   //   path: "/documentation",
   //   component: Layout,

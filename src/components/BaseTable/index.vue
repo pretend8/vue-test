@@ -12,7 +12,9 @@
         @click="item.method()"
         v-for="(item, index) in exportBut"
       >
-        <el-button size="mini" type="primary">{{ item.title }}</el-button>
+        <el-button size="mini" type="primary">
+          {{ item.title }}
+        </el-button>
       </a>
     </div>
 
@@ -180,14 +182,25 @@ let methods = {
 
 export default {
   name: 'TableList',
+  watch: {
+    dataSource: {
+      handler(nv, ov) {
+        console.log(nv, ov)
+        this.$nextTick(() => {
+          this.$refs.multipleTable.doLayout()
+        })
+      },
+      deep: true
+    }
+  },
   props: {
     dataSource: {
       type: Array,
-      default: []
+      default: () => []
     },
     columns: {
       type: Array,
-      default: []
+      default: () => []
     },
     border: {
       type: Boolean,

@@ -175,15 +175,11 @@
         </el-col>
         <el-col v-else class="filter-btn" :span="4" style="text-align: right;">
           <el-button size="mini" type="primary" @click="submitForm()">
-            <svg class="icon" aria-hidden="true">
-              <use xlink:href="#iconSearch"></use>
-            </svg>
+            <svg-icon icon-class="search" />
             Search
           </el-button>
           <el-button size="mini" type="info" @click="resetForm()">
-            <svg class="icon" aria-hidden="true">
-              <use xlink:href="#iconReset"></use>
-            </svg>
+            <i class="el-icon-refresh-left" />
             Reset
           </el-button>
         </el-col>

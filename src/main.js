@@ -19,6 +19,7 @@ import BaseSearch from '@/components/BaseSearch'
 Vue.component('base-table', BaseTable)
 Vue.component('base-search', BaseSearch)
 
+console.log(process.env, 'nihaoma ')
 if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
@@ -27,7 +28,53 @@ Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   locale: enLang // 如果使用中文，无需设置，请删除
 })
+let _message = Vue.prototype.$message
+// let _errorVisible = false
+// type: success/warning/info/error
+let proxyMessage = function(opt, type) {
+  if (typeof opt === 'string') {
+    let tmp = opt
+    opt = {
+      message: tmp,
+      duration: 8000 // 根据需求全局传string过来时增加显示时长
+    }
+    if (typeof type !== 'undefined') {
+      opt.type = type
+    } else {
+      opt.type = 'info'
+    }
+  }
+  let userOnClose = opt.onClose
 
+  opt.onClose = function(obj) {
+    // _errorVisible = false
+    _message.close(obj.id, userOnClose)
+  }
+  opt.showClose = true
+  // if (_errorVisible === false) {
+  //     _errorVisible = true
+  //     _message(opt)
+  // }
+  _message(opt)
+}
+proxyMessage.message = _message
+proxyMessage.success = function(opt) {
+  proxyMessage(opt, 'success')
+}
+
+proxyMessage.warning = function(opt) {
+  proxyMessage(opt, 'warning')
+}
+
+proxyMessage.info = function(opt) {
+  proxyMessage(opt, 'info')
+}
+
+proxyMessage.error = function(opt) {
+  proxyMessage(opt, 'error')
+}
+
+Vue.prototype.$message = proxyMessage
 Vue.config.productionTip = false
 
 new Vue({
