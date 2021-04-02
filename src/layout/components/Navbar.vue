@@ -21,7 +21,24 @@
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
       </template>
-
+      <el-dropdown
+        class="avatar-container right-menu-item hover-effect"
+        trigger="click"
+        @command="handleSetLanguage"
+      >
+        <div>
+          {{ language === 'zh' ? '中文' : 'English' }}
+          <i class="el-icon-caret-bottom" />
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="zh">
+            {{ $t('language.zh') }}
+          </el-dropdown-item>
+          <el-dropdown-item command="en">
+            {{ $t('language.en') }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-dropdown
         class="avatar-container right-menu-item hover-effect"
         trigger="click"
@@ -77,7 +94,7 @@ export default {
     Search
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'device'])
+    ...mapGetters(['sidebar', 'avatar', 'device', 'language'])
   },
   methods: {
     toggleSideBar() {
@@ -86,6 +103,14 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    handleSetLanguage(lang) {
+      this.$i18n.locale = lang
+      this.$store.dispatch('app/setLanguage', lang)
+      this.$message({
+        message: '设置语言成功',
+        type: 'success'
+      })
     }
   }
 }
